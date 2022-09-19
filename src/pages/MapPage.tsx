@@ -12,6 +12,7 @@ import ModalInfo from "../components/ModalInfo";
 import ModalForm from "../components/ModalForm";
 import ModalLogin from "../components/Modallogin";
 import ModalFormUser from "../components/ModalFormUser";
+import api from "../utils/api";
 
 
 const MapPage = () => {
@@ -21,9 +22,6 @@ const MapPage = () => {
   const [openModalInfo, setOpenModalInfo] = React.useState<boolean>(false);
   const [openModalLogin, setOpenModalLogin] = React.useState<boolean>(false);
   const [openModalFormUser,  setOpenModalFormUser] = React.useState<boolean>(false);
-
-  
-
 
   const center = {
     lat: -23.5468951,
@@ -37,8 +35,13 @@ const MapPage = () => {
     })
   };
 
+  async function user(){
+    const users = await api.get('/users');
+    console.log(users)
+  }
+ 
   useEffect(() => {
-    
+    user();
   }, [position]);
 
   const onMapLoad = (map: google.maps.Map) => {
