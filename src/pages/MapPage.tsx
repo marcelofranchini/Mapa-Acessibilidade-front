@@ -12,7 +12,10 @@ import ModalInfo from "../components/ModalInfo";
 import ModalForm from "../components/ModalForm";
 import ModalLogin from "../components/Modallogin";
 import ModalFormUser from "../components/ModalFormUser";
-import api from "../utils/api";
+import { useDispatch, useSelector } from "react-redux";
+import { getPoints } from "../utils/redux/pointsSlice";
+import { AppDispatch } from "../utils/redux/store";
+import { authAction } from "../utils/redux/authSlice";
 
 
 const MapPage = () => {
@@ -23,6 +26,10 @@ const MapPage = () => {
   const [openModalLogin, setOpenModalLogin] = React.useState<boolean>(false);
   const [openModalFormUser,  setOpenModalFormUser] = React.useState<boolean>(false);
 
+  const dispatch = useDispatch<AppDispatch>();
+  const points: any = useSelector((state : any) => state.points.list)
+  const auth: any = useSelector((state : any) => state.auth)
+  
   const center = {
     lat: -23.5468951,
     lng: -47.2005923,
@@ -34,21 +41,22 @@ const MapPage = () => {
       lng: ev.latLng?.lng(),
     })
   };
-
-  async function user(){
-    const users = await api.get('/users');
-    console.log(users)
-  }
  
   useEffect(() => {
-    user();
-  }, [position]);
-
+    dispatch(getPoints());
+  }, [position, dispatch]);
+  
   const onMapLoad = (map: google.maps.Map) => {
     setMap(map);
   };
-  const image =
-  "https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png";
+
+  const markerPointForm = () =>{
+    console.log(auth.user)
+    if(!auth.user){
+      return setOpenModalLogin(true);
+    }
+    return setOpenModalForm(true);
+  }
 
   return (
     <>
@@ -69,10 +77,10 @@ const MapPage = () => {
           >
             <ModalForm open={openModalForm} handleClose={()=> setOpenModalForm(false)}/>
             <ModalInfo open={openModalInfo} handleClose={()=> setOpenModalInfo(false)} />
-            <ModalLogin open={openModalLogin} handleClose={()=> setOpenModalLogin(false)} />
+            <ModalLogin open={openModalLogin} handleCloseAuth={()=> setOpenModalLogin(false)} handleClose={()=> {setOpenModalLogin(false); setOpenModalFormUser(true)}} />
             <ModalFormUser open={openModalFormUser} handleClose={()=> setOpenModalFormUser(false)}/>
 
-            <MarkerF position={position} title={'teste'} onClick={()=>{setOpenModalLogin(true)}} key={'x'} />
+            <MarkerF position={position} title={'teste'} onClick={markerPointForm} key={'x'} />
           </GoogleMap>
         </LoadScript>
       </div>
