@@ -1,14 +1,19 @@
 import { Action, combineReducers, configureStore, ThunkAction } from "@reduxjs/toolkit";
 import pointsReducer from "./pointsSlice";
 import authReducer from "./authSlice";
+import newUserReducer from './newUserSlice';
 import { persistReducer, persistStore } from "redux-persist";
 import storage from "redux-persist/es/storage";
+import newPointReducer from './newPointSlice'
 import thunk from "redux-thunk";
 
 
 const reducers = combineReducers({
   points: pointsReducer,
-  auth: authReducer,          
+  auth: authReducer,  
+  newUser: newUserReducer,  
+  newPoint: newPointReducer        
+        
  });
  
  const persistConfig = {

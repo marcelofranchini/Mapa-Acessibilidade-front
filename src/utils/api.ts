@@ -1,8 +1,8 @@
-
 import axios from 'axios';
 
+
 const api = axios.create({
-    baseURL: 'https://mapa-acessibilidade-***********.herokuapp.com',
+    baseURL: process.env.REACT_APP_API,
     headers: {
       'Content-Type': 'application/json',
     },

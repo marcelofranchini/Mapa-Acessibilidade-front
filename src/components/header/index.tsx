@@ -45,7 +45,7 @@ const Header = () => {
 
   const handleCloseUserMenu = (setting: string) => {
     if(setting === 'Sair'){
-      toast.success('Usuário logado com sucesso', {
+      toast.success('Usuário deslogado com sucesso', {
         position: "top-right",
         autoClose: 3000,
         hideProgressBar: false,
@@ -56,9 +56,9 @@ const Header = () => {
         theme: "colored",
 
         });
-        navigate(0);
-      // localStorage.clear();
-      // return localStorage.removeItem('persist:root')
+        //navigate(0);
+      // return localStorage.clear();
+      return localStorage.removeItem('persist:root')
       
     }
     setAnchorElUser(null);

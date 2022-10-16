@@ -3,14 +3,21 @@ import api from "../api";
 import jwt_decode from "jwt-decode";
 
 
-export const authAction = createAsyncThunk(
-  `auth`,
+export const newPointAction = createAsyncThunk(
+  `newPoint`,
   async (value: any , {rejectWithValue}) => {
     try {
-      const response = await api.post(`/login`, {
-        email: value.email,
-	      password: value.password
-      });
+      const response = await api.post(`/points`, {
+        title: value.title,
+        description: value.description,
+        coord: value.coord,
+        image: value.image,
+        type: value.type,
+        idUser: value.idUser
+      },{ 
+        headers: { 'x-access-token': value.token } 
+        }
+      );
 
       return response.data;
     } catch (err: any) {
@@ -21,28 +28,26 @@ export const authAction = createAsyncThunk(
 );
 
 const initialState: any = {
-  user: null,
+  point: null,
   token: null,
   error: null,
   status: null,
 }
 
-const authSlice = createSlice({
+const newPointSlice = createSlice({
   name: "auth",
   initialState,
   extraReducers: (builder) => {
-    builder.addCase( authAction.pending, (state) => {
+    builder.addCase( newPointAction.pending, (state) => {
       state.status = "loading";
       state.error = null;
     });
-    builder.addCase( authAction.fulfilled,
+    builder.addCase( newPointAction.fulfilled,
       (state, { payload }) => {
-        const userToken =  jwt_decode(payload.token);
-        if(payload && userToken){
-          state.user = payload;
-          state.status = "auth";
+        if(payload){
+          state.status = "create Point ok";
           state.error = null;
-          
+          return state
 
         }else{
           return state
@@ -50,7 +55,7 @@ const authSlice = createSlice({
         
       });
 
-    builder.addCase( authAction.rejected,
+    builder.addCase( newPointAction.rejected,
       (state, { payload }) => {
         if (payload)
           state.error = payload;
@@ -62,5 +67,5 @@ const authSlice = createSlice({
 });
 
 
-export default authSlice.reducer;
+export default newPointSlice.reducer;
 

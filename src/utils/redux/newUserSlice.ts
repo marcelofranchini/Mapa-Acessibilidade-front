@@ -3,13 +3,15 @@ import api from "../api";
 import jwt_decode from "jwt-decode";
 
 
-export const authAction = createAsyncThunk(
-  `auth`,
+export const createUserAction = createAsyncThunk(
+  `newUser`,
   async (value: any , {rejectWithValue}) => {
     try {
-      const response = await api.post(`/login`, {
+      const response = await api.post(`/users`, {
         email: value.email,
-	      password: value.password
+	    password: value.password,
+	    cpf: value.cpf,
+	    name: value.name
       });
 
       return response.data;
@@ -27,30 +29,23 @@ const initialState: any = {
   status: null,
 }
 
-const authSlice = createSlice({
-  name: "auth",
+const newUserSlice = createSlice({
+  name: "newUser",
   initialState,
   extraReducers: (builder) => {
-    builder.addCase( authAction.pending, (state) => {
+    builder.addCase( createUserAction.pending, (state) => {
       state.status = "loading";
       state.error = null;
     });
-    builder.addCase( authAction.fulfilled,
-      (state, { payload }) => {
-        const userToken =  jwt_decode(payload.token);
-        if(payload && userToken){
-          state.user = payload;
-          state.status = "auth";
-          state.error = null;
-          
-
-        }else{
-          return state
-        }
+    builder.addCase( createUserAction.fulfilled,
+       (state, { payload }) => {
+          state.user = 'create';
+          state.status = 'create sucess';
+        return state;
         
       });
 
-    builder.addCase( authAction.rejected,
+    builder.addCase( createUserAction.rejected,
       (state, { payload }) => {
         if (payload)
           state.error = payload;
@@ -62,5 +57,5 @@ const authSlice = createSlice({
 });
 
 
-export default authSlice.reducer;
+export default newUserSlice.reducer;
 

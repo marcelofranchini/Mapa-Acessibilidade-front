@@ -69,7 +69,7 @@ const handleSubmit = async (e: any) =>{
             <ToastContainer />
             <Modal
                 open={props.open}
-                onClose={props.handleClose}
+                onClose={props.handleCloseAuth}
                 aria-labelledby="Modal Form"
                 aria-describedby="Modal Form"
             >

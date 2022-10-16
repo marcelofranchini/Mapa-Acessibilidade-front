@@ -1,10 +1,20 @@
 import { PhotoCamera } from '@mui/icons-material';
 import { Box, Button, FormControl, FormControlLabel, FormLabel, IconButton, Modal, Radio, RadioGroup, TextField, Typography } from '@mui/material';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
+import { newPointAction } from '../../utils/redux/newPointSlice';
+import { getPoints } from '../../utils/redux/pointsSlice';
+import { AppDispatch } from '../../utils/redux/store';
 
 interface IModalInf {
     open: boolean;
     handleClose: () => void;
+    coord: {
+        lng: string,
+        lat: string
+
+    }
 }
 
 const style = {
@@ -20,6 +30,76 @@ const style = {
 };
 
 const ModalForm = (props: IModalInf) => {
+
+    const [newPoint, setNewPoint] = useState({
+        title: '',
+        description: '',
+        image: '',
+        idUser: '',
+        type: ''
+    })
+    const dispatch = useDispatch<AppDispatch>();
+    const auth: any = useSelector((state : any) => state.auth)
+
+
+    const handleSubmit = async (e: any) => {
+
+        if(!newPoint.description || !newPoint.title || !newPoint.title || !newPoint.type || !newPoint.image){
+            return toast.error('Todos os campos devem ser preenchidos', {
+                position: "top-right",
+                autoClose: 4000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+                });
+        }
+        const point = { 
+            ...newPoint, 
+            token: auth.user.token,
+            coord: props.coord,
+            idUser: auth.user._id
+        }
+        const result = await dispatch(newPointAction(point));
+        if(result.type === "newPoint/fulfilled"){
+          dispatch(getPoints());
+          setNewPoint({
+            title: '',
+            description: '',
+            image: '',
+            idUser: '',
+            type: ''
+        });
+          props.handleClose();
+          return toast.success('Ponto registrado com sucesso', {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+    
+                });
+                    
+        }
+
+        return toast.error(result.payload || 'Erro ao criar usuário, tentar novamente', {
+            position: "top-right",
+            autoClose: 4000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+            });
+    
+    }
+    
     return (
         <div>
             <Modal
@@ -47,14 +127,20 @@ const ModalForm = (props: IModalInf) => {
                                 row
                                 aria-labelledby="radio-group-type"
                                 name="radio-group-type"
+                                onChange={(e)=> setNewPoint({...newPoint, type: e.target.value})}
                             >
-                                <FormControlLabel value="Calçada" control={<Radio />} label="Calçada" />
-                                <FormControlLabel value="Via" control={<Radio />} label="Via" />
-                                <FormControlLabel value="" control={<Radio />} label="Outro" />
-                                <FormControlLabel value="Outro" control={<Radio />} label="Outro" />
+                                <FormControlLabel value="acessivel" control={<Radio />} label="Local com Acessibilidade"/>
+                                <FormControlLabel value="nao_acessivel" control={<Radio />} label="Local sem Acessibilidade" />
+        
 
                             </RadioGroup>
-                            <TextField fullWidth label="Título" id="titulo" margin={'dense'} />
+                            <TextField 
+                                fullWidth 
+                                label="Título" 
+                                id="titulo" 
+                                margin={'dense'} 
+                                onChange={(e)=> setNewPoint({...newPoint, title: e.target.value})}
+                            />
                             <TextField
                                 id="outlined-multiline-static"
                                 label="Descrição"
@@ -62,12 +148,17 @@ const ModalForm = (props: IModalInf) => {
                                 multiline
                                 rows={6}
                                 margin={'dense'}
+                                onChange={(e)=> setNewPoint({...newPoint, description: e.target.value})}
                             />
                             <IconButton color="primary" aria-label="upload picture" component="label">
-                                <input hidden accept="image/*" type="file" />
+                                <input hidden accept="image/*" type="file" 
+                                onChange={(e)=> setNewPoint({...newPoint, image: e.target.value})}
+
+                                />
+                                 {newPoint.image ? 'Ok' : 'Buscar Imagem'}
                                 <PhotoCamera />
                             </IconButton>
-                            <Button variant="contained">Enviar</Button>
+                            <Button variant="contained" onClick={handleSubmit}>Enviar</Button>
                         </FormControl>
                     </Box>
                 </Box>

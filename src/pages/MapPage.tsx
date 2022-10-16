@@ -9,13 +9,17 @@ import { REACT_APP_GOOGLE_API_KEY } from "../App";
 import "./MapPage.css";
 import Header from "../components/header";
 import ModalInfo from "../components/ModalInfo";
-import ModalForm from "../components/ModalForm";
 import ModalLogin from "../components/Modallogin";
 import ModalFormUser from "../components/ModalFormUser";
 import { useDispatch, useSelector } from "react-redux";
 import { getPoints } from "../utils/redux/pointsSlice";
 import { AppDispatch } from "../utils/redux/store";
 import { authAction } from "../utils/redux/authSlice";
+import ModalForm from "../components/ModalForm";
+
+import icone from '../utils/icons/circle.svg'
+import iconeOff from '../utils/icons/circleoff.svg'
+
 
 
 const MapPage = () => {
@@ -25,6 +29,8 @@ const MapPage = () => {
   const [openModalInfo, setOpenModalInfo] = React.useState<boolean>(false);
   const [openModalLogin, setOpenModalLogin] = React.useState<boolean>(false);
   const [openModalFormUser,  setOpenModalFormUser] = React.useState<boolean>(false);
+  const [infos, setInfos] = React.useState<any>();
+
 
   const dispatch = useDispatch<AppDispatch>();
   const points: any = useSelector((state : any) => state.points.list)
@@ -40,6 +46,7 @@ const MapPage = () => {
       lat: ev.latLng?.lat() ,
       lng: ev.latLng?.lng(),
     })
+    markerPointForm();
   };
  
   useEffect(() => {
@@ -51,12 +58,19 @@ const MapPage = () => {
   };
 
   const markerPointForm = () =>{
-    console.log(auth.user)
     if(!auth.user){
       return setOpenModalLogin(true);
     }
     return setOpenModalForm(true);
   }
+
+  const handleInfoModal = (point: any) =>{
+
+    setInfos(point)
+    return setOpenModalInfo(true)
+  }
+
+ //onst icone2 = "https://cdn-icons-png.flaticon.com/512/668/668274.png"
 
   return (
     <>
@@ -75,12 +89,23 @@ const MapPage = () => {
             zoom={15}
             onDblClick={handlerPoint}
           >
-            <ModalForm open={openModalForm} handleClose={()=> setOpenModalForm(false)}/>
-            <ModalInfo open={openModalInfo} handleClose={()=> setOpenModalInfo(false)} />
+            <ModalForm coord={position} open={openModalForm} handleClose={()=> setOpenModalForm(false)}/>
+            <ModalInfo open={openModalInfo} infos={infos} handleClose={()=> setOpenModalInfo(false)} />
             <ModalLogin open={openModalLogin} handleCloseAuth={()=> setOpenModalLogin(false)} handleClose={()=> {setOpenModalLogin(false); setOpenModalFormUser(true)}} />
-            <ModalFormUser open={openModalFormUser} handleClose={()=> setOpenModalFormUser(false)}/>
+            <ModalFormUser open={openModalFormUser} handleCloseFormUser={()=> {setOpenModalFormUser(false); setOpenModalLogin(true)}} handleClose={()=> setOpenModalFormUser(false)}/>
+            <MarkerF position={position} title={'teste'}  icon={icone} onClick={markerPointForm} key={'x'} />
 
-            <MarkerF position={position} title={'teste'} onClick={markerPointForm} key={'x'} />
+           { 
+           points.map((point: any) => {
+           return <MarkerF 
+              position={{lat: point.coord.lat , lng: point.coord.lng}} 
+              title={point.title} onClick={()=> handleInfoModal(point)} 
+              key={point._id} 
+              icon={point.type === 'acessivel' ? icone : iconeOff}
+            />
+          })
+            }
+
           </GoogleMap>
         </LoadScript>
       </div>

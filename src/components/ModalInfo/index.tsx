@@ -5,6 +5,7 @@ import Img from './images.jpeg'
 interface IModalInf {
   open: boolean;
   handleClose: () => void;
+  infos: any
 }
 
 const style = {
@@ -16,6 +17,7 @@ const style = {
 };
 
 const ModalInfo = (props: IModalInf) => {
+  const info = props.infos
   return (
     <div>
       <Modal
@@ -25,7 +27,7 @@ const ModalInfo = (props: IModalInf) => {
         aria-describedby="Modal Form"
       >
         <Box sx={style}>
-          <Card sx={{ maxWidth: 345 }}>
+          <Card sx={{ minWidth: 400, minHeight: '100%' }}>
             <CardActionArea>
               <CardMedia
                 component="img"
@@ -35,13 +37,13 @@ const ModalInfo = (props: IModalInf) => {
               />
               <CardContent>
                 <Typography gutterBottom variant="h5" component="div">
-                  Calcada na rua x
+                  {`${info?.title}` || 'erro'}
                 </Typography>
                 <Typography gutterBottom variant="h6" component="div">
-                  Reclamacão
+                {`${info?.type}` || 'erro'}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  Calcada na rua X sem condições de locomoção. Consideracoes
+                {`${info?.description}` || 'erro'}
                 </Typography>
               </CardContent>
             </CardActionArea>
