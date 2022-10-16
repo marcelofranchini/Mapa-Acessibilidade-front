@@ -1,6 +1,7 @@
 import { PhotoCamera } from '@mui/icons-material';
-import { Box, Button, FormControl, FormControlLabel, FormLabel, IconButton, Modal, Radio, RadioGroup, TextField, Typography } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import { Box, Button, CircularProgress, FormControl, FormControlLabel, FormLabel, IconButton, Modal, Radio, RadioGroup, TextField, Typography } from '@mui/material';
+import { red } from '@mui/material/colors';
+import React, { ChangeEvent , useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { newPointAction } from '../../utils/redux/newPointSlice';
@@ -22,11 +23,19 @@ const style = {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 400,
+    minWidth: 300,
     bgcolor: 'background.paper',
     border: '1px solid gray',
     boxShadow: 24,
     p: 4,
+};
+
+const styleLoad = {
+    position: 'absolute' as 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    zIndex: 99999,
 };
 
 const ModalForm = (props: IModalInf) => {
@@ -38,13 +47,32 @@ const ModalForm = (props: IModalInf) => {
         idUser: '',
         type: ''
     })
+
+
+    const [ loading, setLoading] = useState(false)
+
     const dispatch = useDispatch<AppDispatch>();
     const auth: any = useSelector((state : any) => state.auth)
+   
+    const onLoad = (fileString: any) => {
+      const base64code = fileString
+      setNewPoint({...newPoint, image: base64code});
 
-
+    };
+    const getBase64 = (file: any) => {
+        let reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => {
+          onLoad(reader.result);
+        };
+      };
+    
     const handleSubmit = async (e: any) => {
 
+        setLoading(true)
         if(!newPoint.description || !newPoint.title || !newPoint.title || !newPoint.type || !newPoint.image){
+            setLoading(false)
+
             return toast.error('Todos os campos devem ser preenchidos', {
                 position: "top-right",
                 autoClose: 4000,
@@ -73,6 +101,7 @@ const ModalForm = (props: IModalInf) => {
             type: ''
         });
           props.handleClose();
+          setLoading(false)
           return toast.success('Ponto registrado com sucesso', {
                 position: "top-right",
                 autoClose: 3000,
@@ -87,6 +116,7 @@ const ModalForm = (props: IModalInf) => {
                     
         }
 
+        setLoading(false)
         return toast.error(result.payload || 'Erro ao criar usuário, tentar novamente', {
             position: "top-right",
             autoClose: 4000,
@@ -102,6 +132,7 @@ const ModalForm = (props: IModalInf) => {
     
     return (
         <div>
+            {loading ? <CircularProgress style={styleLoad}  />  : null}
             <Modal
                 open={props.open}
                 onClose={props.handleClose}
@@ -152,8 +183,11 @@ const ModalForm = (props: IModalInf) => {
                             />
                             <IconButton color="primary" aria-label="upload picture" component="label">
                                 <input hidden accept="image/*" type="file" 
-                                onChange={(e)=> setNewPoint({...newPoint, image: e.target.value})}
+                                    onChange={(event: ChangeEvent<HTMLInputElement>) => {
+                                        if (!event.target.files) return
+                                        getBase64(event.target.files[0])
 
+                                    }}
                                 />
                                  {newPoint.image ? 'Ok' : 'Buscar Imagem'}
                                 <PhotoCamera />

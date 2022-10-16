@@ -19,6 +19,8 @@ import ModalForm from "../components/ModalForm";
 
 import icone from '../utils/icons/circle.svg'
 import iconeOff from '../utils/icons/circleoff.svg'
+import iconeUnd from '../utils/icons/circleund.svg'
+
 
 
 
@@ -88,12 +90,13 @@ const MapPage = () => {
             center={position || center}
             zoom={15}
             onDblClick={handlerPoint}
+            
           >
             <ModalForm coord={position} open={openModalForm} handleClose={()=> setOpenModalForm(false)}/>
             <ModalInfo open={openModalInfo} infos={infos} handleClose={()=> setOpenModalInfo(false)} />
             <ModalLogin open={openModalLogin} handleCloseAuth={()=> setOpenModalLogin(false)} handleClose={()=> {setOpenModalLogin(false); setOpenModalFormUser(true)}} />
             <ModalFormUser open={openModalFormUser} handleCloseFormUser={()=> {setOpenModalFormUser(false); setOpenModalLogin(true)}} handleClose={()=> setOpenModalFormUser(false)}/>
-            <MarkerF position={position} title={'teste'}  icon={icone} onClick={markerPointForm} key={'x'} />
+            <MarkerF position={position} title={'teste'}  icon={iconeUnd} onClick={markerPointForm} key={'x'} />
 
            { 
            points.map((point: any) => {

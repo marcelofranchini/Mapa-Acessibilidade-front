@@ -17,15 +17,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer, toast } from 'react-toastify';
+import { getPoints } from '../../utils/redux/pointsSlice';
 
 
 
-const pages = ['Products', 'Pricing', 'Blog'];
-const settings = ['Profile', 'Account', 'Dashboard', 'Sair'];
+const settings = ['Perfil', 'Registros', 'Sair'];
 
 const Header = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const user: any = useSelector((state : any) => state.auth.user)
+  const user: any = useSelector((state : any) => state.auth?.user?.name)
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
 
@@ -56,17 +56,24 @@ const Header = () => {
         theme: "colored",
 
         });
+
         //navigate(0);
-      // return localStorage.clear();
-      return localStorage.removeItem('persist:root')
+        // return localStorage.clear();
+      localStorage.removeItem('persist:root')
+      return navigate(0);
+      ;
       
     }
     setAnchorElUser(null);
   };
 
+
+
+  console.log(user, '90099909009')
+
+
   return (
     <AppBar position="static">
-      <ToastContainer />
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           {/* <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} /> */}
@@ -99,30 +106,7 @@ const Header = () => {
             >
               <MenuIcon />
             </IconButton>
-            {/* <Menu
-              id="menu-appbar"
-              anchorEl={anchorElNav}
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'left',
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: 'top',
-                horizontal: 'left',
-              }}
-              open={Boolean(anchorElNav)}
-              onClose={handleCloseNavMenu}
-              sx={{
-                display: { xs: 'block', md: 'none' },
-              }}
-            >
-              {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                  <Typography textAlign="center">{page}</Typography>
-                </MenuItem>
-              ))}
-            </Menu> */}
+      
           </Box>
           <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
           <Typography
@@ -144,21 +128,13 @@ const Header = () => {
             Mapa-Acessibilidade
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-            {/* {pages.map((page) => (
-              <Button
-                key={page}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: 'white', display: 'block' }}
-              >
-                {page}
-              </Button>
-            ))} */}
+    
           </Box>
 
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                <Avatar alt={user || 'U'} src="/static/images/avatar/2.jpg" />
               </IconButton>
             </Tooltip>
             <Menu

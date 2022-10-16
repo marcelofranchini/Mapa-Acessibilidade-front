@@ -32,7 +32,7 @@ const ModalInfo = (props: IModalInf) => {
               <CardMedia
                 component="img"
                 height="140"
-                image= {Img}
+                image= {info?.image ||  Img }
                 alt="green iguana"
               />
               <CardContent>
