@@ -5,6 +5,8 @@ import { authAction } from '../../utils/redux/authSlice';
 import { AppDispatch } from '../../utils/redux/store';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import CloseIcon from '@mui/icons-material/Close';
+
 
 interface IModalInf {
     open: boolean;
@@ -24,6 +26,7 @@ const style = {
     alignItems: 'center',
     justifyContent: 'center'
 };
+
 
 const ModalLogin = (props: IModalInf) => {
 const dispatch = useDispatch<AppDispatch>();
@@ -74,11 +77,20 @@ const handleSubmit = async (e: any) =>{
                 aria-describedby="Modal Form"
             >
                 <Box sx={style}>
-                    <Card sx={{ minWidth: 345 }}>
+                    <Card sx={{ minWidth: 345 ,borderRadius: 5 }}>
                         <CardActionArea>
+                            <CloseIcon onClick={props.handleCloseAuth} 
+                             style={{
+                                paddingLeft: 20,
+                                paddingTop: 20, 
+                                display: 'flex',
+                                flexDirection: 'column',
+                                
+                            }}/>
                             <FormControl 
                             style={{
-                                minWidth: 345, padding: 20, display: 'flex',
+                                minWidth: 345, paddingLeft: 20, paddingBottom: 20, paddingRight: 20,
+                                display: 'flex',
                                 flexDirection: 'column',
                                 alignItems: 'center',
                                 justifyContent: 'center'

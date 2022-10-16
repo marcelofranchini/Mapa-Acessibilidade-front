@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { createUserAction } from '../../utils/redux/newUserSlice';
 import { AppDispatch } from '../../utils/redux/store';
+import CloseIcon from '@mui/icons-material/Close';
 
 interface IModalFormUser {
     open: boolean;
@@ -22,6 +23,7 @@ const style = {
     border: '1px solid gray',
     boxShadow: 24,
     p: 4,
+    borderRadius: 5 
 };
 
 const ModalFormUser = (props: IModalFormUser) => {
@@ -72,6 +74,8 @@ const ModalFormUser = (props: IModalFormUser) => {
                 aria-describedby="Modal Form"
             >
                 <Box sx={style}>
+                <CloseIcon onClick={props.handleClose}/>
+
                     <Box
                         sx={{
                             display: 'flex',
@@ -118,6 +122,9 @@ const ModalFormUser = (props: IModalFormUser) => {
                                 id="cpf" 
                                 margin={'dense'} 
                                 onChange={(e)=> setUser({...user, cpf: e.target.value})}
+                                inputProps={{
+                                    maxLength: 11,
+                                  }}
                             />
 
                                 <Button fullWidth 

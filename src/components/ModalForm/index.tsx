@@ -7,6 +7,8 @@ import { toast } from 'react-toastify';
 import { newPointAction } from '../../utils/redux/newPointSlice';
 import { getPoints } from '../../utils/redux/pointsSlice';
 import { AppDispatch } from '../../utils/redux/store';
+import CloseIcon from '@mui/icons-material/Close';
+
 
 interface IModalInf {
     open: boolean;
@@ -28,6 +30,8 @@ const style = {
     border: '1px solid gray',
     boxShadow: 24,
     p: 4,
+    borderRadius: 5 
+
 };
 
 const styleLoad = {
@@ -140,13 +144,16 @@ const ModalForm = (props: IModalInf) => {
                 aria-describedby="Modal Form"
             >
                 <Box sx={style}>
+                <CloseIcon onClick={props.handleClose}/>
                     <Box
                         sx={{
                             maxWidth: '100%',
                             display: 'flex',
                             flexDirection: 'column',
                             alignItems: 'center',
-                            justifyContent: 'center'
+                            justifyContent: 'center',
+                            borderRadius: 5 
+
                         }}
                     >
                         <h3>
@@ -181,7 +188,7 @@ const ModalForm = (props: IModalInf) => {
                                 margin={'dense'}
                                 onChange={(e)=> setNewPoint({...newPoint, description: e.target.value})}
                             />
-                            <IconButton color="primary" aria-label="upload picture" component="label">
+                            <IconButton color="primary" aria-label="upload picture" component="label" >
                                 <input hidden accept="image/*" type="file" 
                                     onChange={(event: ChangeEvent<HTMLInputElement>) => {
                                         if (!event.target.files) return
@@ -190,7 +197,7 @@ const ModalForm = (props: IModalInf) => {
                                     }}
                                 />
                                  {newPoint.image ? 'Ok' : 'Buscar Imagem'}
-                                <PhotoCamera />
+                                <PhotoCamera style={{marginLeft: 20}}/>
                             </IconButton>
                             <Button variant="contained" onClick={handleSubmit}>Enviar</Button>
                         </FormControl>

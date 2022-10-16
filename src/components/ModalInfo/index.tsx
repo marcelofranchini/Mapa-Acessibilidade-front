@@ -1,6 +1,9 @@
 import { Box, Button, Card, CardActionArea, CardContent, CardMedia, Modal, Typography } from '@mui/material';
 import React from 'react';
-import Img from './images.jpeg'
+import CloseIcon from '@mui/icons-material/Close';
+import { Divider } from '@mui/material';
+
+
 
 interface IModalInf {
   open: boolean;
@@ -27,22 +30,35 @@ const ModalInfo = (props: IModalInf) => {
         aria-describedby="Modal Form"
       >
         <Box sx={style}>
-          <Card sx={{ minWidth: 400, minHeight: '100%' }}>
+          <Card sx={{ minWidth: 400, minHeight: '100%', borderRadius: 5 }}>
             <CardActionArea>
+              <CloseIcon onClick={props.handleClose}
+               style={{
+                padding: 20,
+                display: 'flex',
+                flexDirection: 'column',
+            }}
+              />
               <CardMedia
                 component="img"
-                height="140"
-                image= {info?.image ||  Img }
-                alt="green iguana"
+                height="180"
+                image= {info?.image || null }
+                alt="imagem descricao"
+                
+
               />
               <CardContent>
-                <Typography gutterBottom variant="h5" component="div">
+                <Typography gutterBottom variant="h5" component="div" marginTop={2}>
                   {`${info?.title}` || 'erro'}
                 </Typography>
-                <Typography gutterBottom variant="h6" component="div">
+                <Divider/>
+
+                <Typography gutterBottom variant="h6" component="div" marginTop={2}>
                 {`${info?.type === 'acessivel' ? 'Local Acessível': 'Local Não Acessível'}` || 'erro'}
                 </Typography>
-                <Typography variant="body2" color="text.secondary">
+                <Divider/>
+
+                <Typography variant="body2" color="text.secondary" marginTop={2} marginBottom={4}>
                 {`${info?.description}` || 'erro'}
                 </Typography>
               </CardContent>
