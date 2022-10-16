@@ -40,7 +40,7 @@ const ModalInfo = (props: IModalInf) => {
                   {`${info?.title}` || 'erro'}
                 </Typography>
                 <Typography gutterBottom variant="h6" component="div">
-                {`${info?.type}` || 'erro'}
+                {`${info?.type === 'acessivel' ? 'Local Acessível': 'Local Não Acessível'}` || 'erro'}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
                 {`${info?.description}` || 'erro'}
