@@ -76,7 +76,7 @@ const MapPage = () => {
 
   return (
     <>
-      <Header />
+      <Header handleOpenLogin={() => setOpenModalLogin(true)} />
       <div className="map">
 
         <LoadScript

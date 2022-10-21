@@ -2,6 +2,7 @@ import { Box, Button, Card, CardActionArea, CardContent, CardMedia, Modal, Typog
 import React from 'react';
 import CloseIcon from '@mui/icons-material/Close';
 import { Divider } from '@mui/material';
+import acessibilidade from '../../utils/images/acessibilidade.jpeg'
 
 
 
@@ -18,6 +19,7 @@ const style = {
   transform: 'translate(-50%, -50%)',
  
 };
+
 
 const ModalInfo = (props: IModalInf) => {
   const info = props.infos
@@ -42,12 +44,12 @@ const ModalInfo = (props: IModalInf) => {
               <CardMedia
                 component="img"
                 height="180"
-                image= {info?.image || null }
+                image= {info?.image || acessibilidade }
                 alt="imagem descricao"
                 
 
               />
-              <CardContent>
+              <CardContent style={{ maxWidth: 400}}>
                 <Typography gutterBottom variant="h5" component="div" marginTop={2}>
                   {`${info?.title}` || 'erro'}
                 </Typography>

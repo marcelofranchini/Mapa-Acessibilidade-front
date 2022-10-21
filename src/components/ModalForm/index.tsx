@@ -8,6 +8,8 @@ import { newPointAction } from '../../utils/redux/newPointSlice';
 import { getPoints } from '../../utils/redux/pointsSlice';
 import { AppDispatch } from '../../utils/redux/store';
 import CloseIcon from '@mui/icons-material/Close';
+import imageCompression from 'browser-image-compression';
+
 
 
 interface IModalInf {
@@ -58,6 +60,28 @@ const ModalForm = (props: IModalInf) => {
     const dispatch = useDispatch<AppDispatch>();
     const auth: any = useSelector((state : any) => state.auth)
    
+
+    async function handleImageUpload(file: any) {
+
+        console.log('originalFile instanceof Blob', file instanceof Blob);
+        console.log(`originalFile size ${file.size / 1024 / 1024} MB`);
+      
+        const options = {
+          maxSizeMB: 0.6,
+          maxWidthOrHeight: 380,
+          useWebWorker: true
+        }
+        try {
+          const compressedFile = await imageCompression(file, options);
+          console.log('compressedFile instanceof Blob', compressedFile instanceof Blob); 
+          console.log(`compressedFile size ${compressedFile.size / 400 / 180} MB`); 
+      
+          await getBase64(compressedFile); 
+        } catch (error) {
+          console.log(error);
+        }
+      
+      }
     const onLoad = (fileString: any) => {
       const base64code = fileString
       setNewPoint({...newPoint, image: base64code});
@@ -74,10 +98,10 @@ const ModalForm = (props: IModalInf) => {
     const handleSubmit = async (e: any) => {
 
         setLoading(true)
-        if(!newPoint.description || !newPoint.title || !newPoint.title || !newPoint.type || !newPoint.image){
+        if(!newPoint.description || !newPoint.title || !newPoint.title || !newPoint.type ){
             setLoading(false)
 
-            return toast.error('Todos os campos devem ser preenchidos', {
+            return toast.error('Todos os campos devem ser preenchidos. Imagem Opcional', {
                 position: "top-right",
                 autoClose: 4000,
                 hideProgressBar: false,
@@ -192,7 +216,7 @@ const ModalForm = (props: IModalInf) => {
                                 <input hidden accept="image/*" type="file" 
                                     onChange={(event: ChangeEvent<HTMLInputElement>) => {
                                         if (!event.target.files) return
-                                        getBase64(event.target.files[0])
+                                        handleImageUpload(event.target.files[0])
 
                                     }}
                                 />

@@ -19,11 +19,13 @@ import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer, toast } from 'react-toastify';
 import { getPoints } from '../../utils/redux/pointsSlice';
 
+interface IHeader {
+  handleOpenLogin: () => void;
+}
 
+const settings = ['Entrar', 'Perfil', 'Registros', 'Sair'];
 
-const settings = ['Perfil', 'Registros', 'Sair'];
-
-const Header = () => {
+const Header = (props:IHeader) => {
   const dispatch = useDispatch<AppDispatch>();
   const user: any = useSelector((state : any) => state.auth?.user?.name)
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
@@ -44,7 +46,7 @@ const Header = () => {
 
 
   const handleCloseUserMenu = (setting: string) => {
-    if(setting === 'Sair'){
+    if(setting === 'Sair' && user){
       toast.success('Usuário deslogado com sucesso', {
         position: "top-right",
         autoClose: 3000,
@@ -56,27 +58,22 @@ const Header = () => {
         theme: "colored",
 
         });
-
-        //navigate(0);
-        // return localStorage.clear();
       localStorage.removeItem('persist:root')
       return navigate(0);
       ;
       
     }
+    if(!user && setting !== 'Sair'){
+      props.handleOpenLogin()
+
+    }
     setAnchorElUser(null);
   };
-
-
-
-  console.log(user, '90099909009')
-
 
   return (
     <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          {/* <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} /> */}
           <Typography
             variant="h6"
             noWrap
@@ -125,7 +122,7 @@ const Header = () => {
               textDecoration: 'none',
             }}
           >
-            Mapa-Acessibilidade
+            Mapa Acessibilidade
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
     

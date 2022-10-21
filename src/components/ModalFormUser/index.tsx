@@ -37,6 +37,38 @@ const ModalFormUser = (props: IModalFormUser) => {
     })
 
     const handleSubmit = async (e: any) =>{
+
+
+      if(!user.cpf || !user.name || !user.email|| !user.password ){    
+                return toast.error('Todos os campos devem ser preenchidos.', {
+                    position: "top-right",
+                    autoClose: 4000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "colored",
+                    });
+        
+        }
+
+        if(user.cpf.length !== 11){    
+            return toast.error('Cpf deve conter 11 digitos ', {
+                position: "top-right",
+                autoClose: 4000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+                });
+    
+    }
+
+
+
         const result = await dispatch(createUserAction(user));
         if(result.type === "newUser/fulfilled"){
           props.handleCloseFormUser();

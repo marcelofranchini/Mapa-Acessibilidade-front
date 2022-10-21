@@ -19,6 +19,7 @@
     "@types/react-dom": "^18.0.0",
     "@types/react-input-mask": "^3.0.1",
     "axios": "^0.27.2",
+    "browser-image-compression": "^2.0.0",
     "dotenv": "^16.0.3",
     "i": "^0.3.7",
     "inputmask": "^5.0.7",
