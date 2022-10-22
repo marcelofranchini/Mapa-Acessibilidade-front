@@ -21,6 +21,8 @@ import { getPoints } from '../../utils/redux/pointsSlice';
 
 interface IHeader {
   handleOpenLogin: () => void;
+  handleOpenPoints: () => void;
+
 }
 
 const settings = ['Entrar', 'Perfil', 'Registros', 'Sair'];
@@ -65,7 +67,9 @@ const Header = (props:IHeader) => {
     }
     if(!user && setting !== 'Sair'){
       props.handleOpenLogin()
-
+    }
+    if(user && setting === 'Registros'){
+      props.handleOpenPoints()
     }
     setAnchorElUser(null);
   };

@@ -5,14 +5,15 @@ import newUserReducer from './newUserSlice';
 import { persistReducer, persistStore } from "redux-persist";
 import storage from "redux-persist/es/storage";
 import newPointReducer from './newPointSlice'
-import thunk from "redux-thunk";
+import pointDelete from "./pointsDeleteSlice";
 
 
 const reducers = combineReducers({
   points: pointsReducer,
   auth: authReducer,  
   newUser: newUserReducer,  
-  newPoint: newPointReducer        
+  newPoint: newPointReducer,
+  deletePoint: pointDelete 
         
  });
  
@@ -20,13 +21,18 @@ const reducers = combineReducers({
      key: 'root',
      storage
  };
+
+ 
  
  const persistedReducer = persistReducer(persistConfig, reducers);
 
 const store = configureStore({
   reducer: persistedReducer,
   // devTools: process.env.NODE_ENV !== 'production',
-  // middleware: [thunk]
+  middleware: getDefaultMiddleware =>
+  getDefaultMiddleware({
+    serializableCheck: false,
+  }),
 });
 
 

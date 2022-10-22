@@ -20,6 +20,7 @@ import ModalForm from "../components/ModalForm";
 import icone from '../utils/icons/circle.svg'
 import iconeOff from '../utils/icons/circleoff.svg'
 import iconeUnd from '../utils/icons/circleund.svg'
+import ModalPoints from "../components/ModalPoints";
 
 
 
@@ -31,6 +32,8 @@ const MapPage = () => {
   const [openModalInfo, setOpenModalInfo] = React.useState<boolean>(false);
   const [openModalLogin, setOpenModalLogin] = React.useState<boolean>(false);
   const [openModalFormUser,  setOpenModalFormUser] = React.useState<boolean>(false);
+  const [openModalPoints,  setopenModalPoints] = React.useState<boolean>(false);
+
   const [infos, setInfos] = React.useState<any>();
 
 
@@ -76,7 +79,7 @@ const MapPage = () => {
 
   return (
     <>
-      <Header handleOpenLogin={() => setOpenModalLogin(true)} />
+      <Header handleOpenLogin={() => setOpenModalLogin(true)} handleOpenPoints={()=> setopenModalPoints(true)} />
       <div className="map">
 
         <LoadScript
@@ -97,7 +100,7 @@ const MapPage = () => {
             <ModalLogin open={openModalLogin} handleCloseAuth={()=> setOpenModalLogin(false)} handleClose={()=> {setOpenModalLogin(false); setOpenModalFormUser(true)}} />
             <ModalFormUser open={openModalFormUser} handleCloseFormUser={()=> {setOpenModalFormUser(false); setOpenModalLogin(true)}} handleClose={()=> setOpenModalFormUser(false)}/>
             <MarkerF position={position} title={'teste'}  icon={iconeUnd} onClick={markerPointForm} key={'x'} />
-
+            <ModalPoints open={openModalPoints} handleClose={()=> setopenModalPoints(false) } />
            { 
            points.map((point: any) => {
            return <MarkerF 
