@@ -50,17 +50,18 @@ const ModalInfo = (props: IModalInf) => {
 
               />
               <CardContent style={{ maxWidth: 400}}>
-                <Typography gutterBottom variant="h5" component="div" marginTop={2}>
+                <Typography gutterBottom variant="h5" component="div" marginTop={2} style={{ wordWrap: "break-word" }}  >
                   {`${info?.title}` || 'erro'}
                 </Typography>
                 <Divider/>
 
-                <Typography gutterBottom variant="h6" component="div" marginTop={2}>
+                <Typography gutterBottom variant="h6" component="div" marginTop={2} >
                 {`${info?.type === 'acessivel' ? 'Local Acessível': 'Local Não Acessível'}` || 'erro'}
                 </Typography>
                 <Divider/>
 
-                <Typography variant="body2" color="text.secondary" marginTop={2} marginBottom={4} style={{whiteSpace: 'nowrap'}}>
+                <Typography variant="body2" color="text.secondary" marginTop={2} marginBottom={4}
+                  style={{ wordWrap: "break-word" }}>
                 {`${info?.description}` || 'erro'}
                 </Typography>
               </CardContent>

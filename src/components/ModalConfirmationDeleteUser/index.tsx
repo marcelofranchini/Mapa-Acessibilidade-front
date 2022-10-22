@@ -1,4 +1,4 @@
-import { Box, Button, FormControl, Modal, TextField} from '@mui/material';
+import { Box, Button, CircularProgress, FormControl, Modal, TextField} from '@mui/material';
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
@@ -29,7 +29,16 @@ const style = {
     borderRadius: 5 
 };
 
+const styleLoad = {
+    position: 'absolute' as 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    zIndex: 99999,
+};
+
 const ModalDeleteUser = (props: IModalDeleteUser) => {
+    const [ loading, setLoading] = useState(false)
     const dispatch = useDispatch<AppDispatch>();
     const user: any = useSelector((state : any) => state?.auth?.user)
     const navigate = useNavigate();
@@ -42,6 +51,7 @@ const ModalDeleteUser = (props: IModalDeleteUser) => {
     }
 
     const handleSubmit = async (e: any) =>{
+        setLoading(true)
         const value = {token: user.token, userId: user._id }
         const result = await dispatch(userDelete(value));
         if(result.type === "userDelete/fulfilled"){
@@ -57,12 +67,15 @@ const ModalDeleteUser = (props: IModalDeleteUser) => {
     
                 });
             return setTimeout(async ()=>{
+                setLoading(false)
+
                     await sair()
                 }, 2000)
                
 
                     
         }
+        setLoading(false)
 
         return toast.error(result.payload || 'Erro ao deletar usuário, tentar novamente', {
             position: "top-right",
@@ -78,6 +91,8 @@ const ModalDeleteUser = (props: IModalDeleteUser) => {
     }
     return (
         <div>
+            {loading ? <CircularProgress style={styleLoad}  />  : null}
+
             <Modal
                 open={props.open}
                 onClose={props.handleClose}

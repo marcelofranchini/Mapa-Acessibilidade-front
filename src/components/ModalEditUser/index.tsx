@@ -1,5 +1,5 @@
-import { Box, Button, FormControl, Modal, TextField} from '@mui/material';
-import React, { useState } from 'react';
+import { Box, Button, CircularProgress, FormControl, Modal, TextField} from '@mui/material';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from '../../utils/redux/store';
 import CloseIcon from '@mui/icons-material/Close';
@@ -30,21 +30,32 @@ const style = {
     borderRadius: 5 
 };
 
+const styleLoad = {
+    position: 'absolute' as 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    zIndex: 99999,
+};
+
 const ModalEditUser = (props: IModalEditUser) => {
     const dispatch = useDispatch<AppDispatch>();
+    const [ loading, setLoading] = useState(false)
     const [openModal, setOpenModal] = useState<boolean>(false);
     const userAuth: any = useSelector((state : any) => state?.auth?.user)
     const userRedux: any = useSelector((state : any) => state?.getUser.user)
     const [user, setUser] = useState({})
-
+    
     const handleSubmit = async (e: any) =>{
+        setLoading(true)
         const data = {token: userAuth?.token, userId: userAuth?._id , user }
-        console.log(data, 'dfsdfsdfds')
         const result = await dispatch(userEdit(data));
         await dispatch(getUser(data));
         if(result.type === "userEdit/fulfilled"){
           props.handleCloseFormUser();
           setUser({})
+          setLoading(false)
+
           return toast.success('Usuário editado com sucesso', {
                 position: "top-right",
                 autoClose: 3000,
@@ -58,6 +69,8 @@ const ModalEditUser = (props: IModalEditUser) => {
                 });
                     
         }
+        setLoading(false)
+
         return toast.error(result.payload || 'Erro ao criar usuário, tentar novamente', {
             position: "top-right",
             autoClose: 4000,
@@ -72,6 +85,8 @@ const ModalEditUser = (props: IModalEditUser) => {
     }
     return (
         <div>
+            {loading ? <CircularProgress style={styleLoad}  />  : null}
+
             <ModalDeleteUser open={openModal} handleClose={()=> setOpenModal(false)} />
             <Modal
                 open={props.open}

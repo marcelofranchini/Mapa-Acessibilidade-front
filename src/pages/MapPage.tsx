@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   GoogleMap,
   MarkerF,
@@ -23,11 +23,19 @@ import iconeUnd from '../utils/icons/circleund.svg'
 import ModalPoints from "../components/ModalPoints";
 import ModalEditUser from "../components/ModalEditUser";
 import { getUser } from "../utils/redux/userByIdSlice";
+import { CircularProgress } from "@mui/material";
 
 
-
+const styleLoad = {
+  position: 'absolute' as 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  zIndex: 99999,
+};
 
 const MapPage = () => {
+  const [ loading, setLoading] = useState(false)
   const [map, setMap] = React.useState<google.maps.Map>();
   const [position, setPosition] = React.useState<any>();
   const [openModalForm,  setOpenModalForm] = React.useState<boolean>(false);
@@ -58,11 +66,16 @@ const MapPage = () => {
   };
  
   useEffect(() => {
+    setLoading(true)
     dispatch(getPoints());
     if(auth?.user){
       const data = {token: auth?.user?.token, userId: auth?.user?._id }
       dispatch(getUser(data));
+      setLoading(false)
+
     }
+    setLoading(false)
+
   }, [position, dispatch]);
   
   const onMapLoad = (map: google.maps.Map) => {
@@ -86,6 +99,7 @@ const MapPage = () => {
     <>
       <Header handleOpenEditUser={() => setOpenModalEditUser(true)} handleOpenLogin={() => setOpenModalLogin(true)} handleOpenPoints={()=> setopenModalPoints(true)} />
       <div className="map">
+      {loading ? <CircularProgress style={styleLoad}  />  : null}
 
         <LoadScript
           googleMapsApiKey={REACT_APP_GOOGLE_API_KEY}

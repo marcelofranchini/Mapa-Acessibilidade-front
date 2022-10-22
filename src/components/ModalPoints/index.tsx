@@ -16,15 +16,6 @@ interface IModalPoints {
   handleClose: () => void;
 }
 
-const style = {
-  position: 'absolute' as 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  maxHeight: 400,
-  overflowY: 'scroll',
-  borderRadius: 5
-};
 
 const ModalPoints = (props: IModalPoints) => {
     const dispatch = useDispatch<AppDispatch>();
@@ -32,6 +23,17 @@ const ModalPoints = (props: IModalPoints) => {
     const [pointId, setPointId] = useState();
     const points: any = useSelector((state : any) => state.points?.list)
     const user: any = useSelector((state : any) => state.auth?.user)
+
+
+      const style = {
+        position: 'absolute' as 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        maxHeight: 400,
+        overflowY: points.length > 2 ? 'scroll' : 'hidden',
+        borderRadius: 5
+      };
 
     const pointsUser = points.filter((point: any) => point.idUser === user?._id)
 
@@ -95,7 +97,8 @@ const ModalPoints = (props: IModalPoints) => {
                     )
 
                 })}
-                {pointsUser.length < 1 ? <h1 style={{marginLeft: '20%', marginBottom: '20%'}}>Nenhum Registro </h1>: null}
+                {pointsUser.length < 1 ? <h1 style={{marginLeft: '20%', marginBottom: '20%',   overflowY: 'hidden',
+}}>Nenhum Registro </h1>: null}
               </CardContent>
             </CardActionArea>
           </Card>
