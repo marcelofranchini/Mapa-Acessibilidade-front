@@ -8,30 +8,34 @@ import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
 import Container from '@mui/material/Container';
 import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
-import { AppDispatch } from '../../utils/redux/store';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import 'react-toastify/dist/ReactToastify.css';
-import { ToastContainer, toast } from 'react-toastify';
-import { getPoints } from '../../utils/redux/pointsSlice';
+import { toast } from 'react-toastify';
+import storage from 'redux-persist/es/storage';
+import { AppDispatch } from '../../utils/redux/store';
+import { logoutAction } from '../../utils/redux/logoutSlice';
 
 interface IHeader {
   handleOpenLogin: () => void;
   handleOpenPoints: () => void;
+  handleOpenEditUser: () => void;
 
 }
 
 const settings = ['Entrar', 'Perfil', 'Registros', 'Sair'];
 
 const Header = (props:IHeader) => {
-  const dispatch = useDispatch<AppDispatch>();
-  const user: any = useSelector((state : any) => state.auth?.user?.name)
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+  const userRedux: any = useSelector((state : any) => state?.getUser?.user?.name);
+  const dispatch = useDispatch<AppDispatch>();
+
+
+  
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -40,16 +44,14 @@ const Header = (props:IHeader) => {
     setAnchorElUser(event.currentTarget);
   };
 
-  const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
-  };
-
   const navigate = useNavigate();
 
+  // React.useEffect(()=>{}, [dispatch])
 
-  const handleCloseUserMenu = (setting: string) => {
-    if(setting === 'Sair' && user){
-      toast.success('Usuário deslogado com sucesso', {
+  const handleCloseUserMenu = async (setting: string) => {
+    if(setting === 'Sair' && userRedux){
+      dispatch(logoutAction())
+       toast.success('Usuário deslogado com sucesso', {
         position: "top-right",
         autoClose: 3000,
         hideProgressBar: false,
@@ -60,16 +62,18 @@ const Header = (props:IHeader) => {
         theme: "colored",
 
         });
-      localStorage.removeItem('persist:root')
-      return navigate(0);
+        return navigate(0);
       ;
       
     }
-    if(!user && setting !== 'Sair'){
+    if(!userRedux && setting !== 'Sair'){
       props.handleOpenLogin()
     }
-    if(user && setting === 'Registros'){
+    if(userRedux && setting === 'Registros'){
       props.handleOpenPoints()
+    }
+    if(userRedux && setting === 'Perfil'){
+      props.handleOpenEditUser()
     }
     setAnchorElUser(null);
   };
@@ -135,7 +139,7 @@ const Header = (props:IHeader) => {
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt={user || 'U'} src="/static/images/avatar/2.jpg" />
+                <Avatar alt={userRedux || 'U'} src="/static/images/avatar/2.jpg" />
               </IconButton>
             </Tooltip>
             <Menu

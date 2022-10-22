@@ -1,15 +1,17 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../api";
 
-export const deletePoints = createAsyncThunk(
-  `pointDelete`,
+export const userEdit = createAsyncThunk(
+  `userEdit`,
   async (value: any, {rejectWithValue}) => {
     try {
+      console.log('userEdit', value.userId)
 
-      const response = await api.delete(`/points/${value.pointId}`, { 
+      const response = await api.patch(`/users/${value.userId}`, value.user, { 
         headers: { 'x-access-token': value.token } 
         });
 
+      console.log('userEdit', response)
       return response.data;
     } catch (err: any) {
       const resp = err?.response;
@@ -19,24 +21,26 @@ export const deletePoints = createAsyncThunk(
 );
 
 const initialState: any = {
+  user: null,
   error: null,
   status: "idle",
 }
 
-const pointsDeleteSlice = createSlice({
-  name: "pointDelete",
+const userEditSlice = createSlice({
+  name: "userEdit",
   initialState,
   extraReducers: (builder) => {
-    builder.addCase( deletePoints.pending, (state) => {
+    builder.addCase( userEdit.pending, (state) => {
       state.status = "loading";
       state.error = null;
     });
-    builder.addCase( deletePoints.fulfilled,
+    builder.addCase( userEdit.fulfilled,
       (state, { payload }) => {
-        state.status = "excluido";
+        state.user = payload      
+        state.status = "editado";
       });
 
-    builder.addCase( deletePoints.rejected,
+    builder.addCase( userEdit.rejected,
       (state, { payload }) => {
         if (payload)
           state.error = payload;
@@ -48,5 +52,5 @@ const pointsDeleteSlice = createSlice({
 });
 
 
-export default pointsDeleteSlice.reducer;
+export default userEditSlice.reducer;
 

@@ -6,6 +6,7 @@ import { AppDispatch } from '../../utils/redux/store';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import CloseIcon from '@mui/icons-material/Close';
+import { getUser } from '../../utils/redux/userByIdSlice';
 
 
 interface IModalInf {
@@ -41,6 +42,8 @@ const [user, setUser] = useState({
 const handleSubmit = async (e: any) =>{
     const result = await dispatch(authAction(user));
     if(result.type === "auth/fulfilled"){
+        const data = {token: result?.payload?.token, userId: result?.payload?._id }
+        await dispatch(getUser(data));
       props.handleCloseAuth();
       return toast.success('Usuário logado com sucesso', {
             position: "top-right",

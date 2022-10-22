@@ -60,7 +60,7 @@ const ModalInfo = (props: IModalInf) => {
                 </Typography>
                 <Divider/>
 
-                <Typography variant="body2" color="text.secondary" marginTop={2} marginBottom={4}>
+                <Typography variant="body2" color="text.secondary" marginTop={2} marginBottom={4} style={{whiteSpace: 'nowrap'}}>
                 {`${info?.description}` || 'erro'}
                 </Typography>
               </CardContent>

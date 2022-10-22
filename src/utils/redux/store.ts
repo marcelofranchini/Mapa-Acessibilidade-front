@@ -6,6 +6,11 @@ import { persistReducer, persistStore } from "redux-persist";
 import storage from "redux-persist/es/storage";
 import newPointReducer from './newPointSlice'
 import pointDelete from "./pointsDeleteSlice";
+import pointEdit from "./pointsEditSlice";
+import userEditReducer from './userEditSlice';
+import userDelete from './userDeleteSlice';
+import getUserSlice from './userByIdSlice';
+import logoutSlice from "./logoutSlice";
 
 
 const reducers = combineReducers({
@@ -13,13 +18,21 @@ const reducers = combineReducers({
   auth: authReducer,  
   newUser: newUserReducer,  
   newPoint: newPointReducer,
-  deletePoint: pointDelete 
+  userEdit: userEditReducer,
+  userDelete: userDelete,
+  deletePoint: pointDelete,
+  editPoint: pointEdit,
+  getUser: getUserSlice,
+  logoutUser: logoutSlice
         
  });
  
  const persistConfig = {
-     key: 'root',
-     storage
+  key: "root",
+  version: 1,
+  storage,
+  // if you do not want to persist this part of the state
+  blacklist: ['omitedPart']
  };
 
  
@@ -29,10 +42,10 @@ const reducers = combineReducers({
 const store = configureStore({
   reducer: persistedReducer,
   // devTools: process.env.NODE_ENV !== 'production',
-  middleware: getDefaultMiddleware =>
-  getDefaultMiddleware({
-    serializableCheck: false,
-  }),
+  // middleware: getDefaultMiddleware =>
+  // getDefaultMiddleware({
+  //   serializableCheck: false,
+  // }),
 });
 
 

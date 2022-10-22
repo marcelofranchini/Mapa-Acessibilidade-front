@@ -1,15 +1,13 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../api";
 
-export const deletePoints = createAsyncThunk(
-  `pointDelete`,
+export const getUser = createAsyncThunk(
+  `getUser`,
   async (value: any, {rejectWithValue}) => {
     try {
-
-      const response = await api.delete(`/points/${value.pointId}`, { 
-        headers: { 'x-access-token': value.token } 
+      const response = await api.get(`/users/${value.userId}`,  { 
+        headers: { 'x-access-token': value.token as string} 
         });
-
       return response.data;
     } catch (err: any) {
       const resp = err?.response;
@@ -19,28 +17,30 @@ export const deletePoints = createAsyncThunk(
 );
 
 const initialState: any = {
+  user: null,
   error: null,
   status: "idle",
 }
 
-const pointsDeleteSlice = createSlice({
-  name: "pointDelete",
+const getUserSlice = createSlice({
+  name: "getUser",
   initialState,
   extraReducers: (builder) => {
-    builder.addCase( deletePoints.pending, (state) => {
+    builder.addCase( getUser.pending, (state) => {
       state.status = "loading";
       state.error = null;
     });
-    builder.addCase( deletePoints.fulfilled,
+    builder.addCase( getUser.fulfilled,
       (state, { payload }) => {
-        state.status = "excluido";
+        state.user = payload;
+        state.status = "ok";
       });
 
-    builder.addCase( deletePoints.rejected,
+    builder.addCase( getUser.rejected,
       (state, { payload }) => {
         if (payload)
           state.error = payload;
-          state.status = "error";
+        state.status = "idle";
       });
   },
   reducers: {
@@ -48,5 +48,5 @@ const pointsDeleteSlice = createSlice({
 });
 
 
-export default pointsDeleteSlice.reducer;
+export default getUserSlice.reducer;
 

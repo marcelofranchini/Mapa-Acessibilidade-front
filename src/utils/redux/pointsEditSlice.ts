@@ -1,12 +1,12 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../api";
 
-export const deletePoints = createAsyncThunk(
-  `pointDelete`,
+export const editPoints = createAsyncThunk(
+  `editPoints`,
   async (value: any, {rejectWithValue}) => {
     try {
 
-      const response = await api.delete(`/points/${value.pointId}`, { 
+      const response = await api.patch(`/points/${value.pointId}`, value.point, { 
         headers: { 'x-access-token': value.token } 
         });
 
@@ -23,20 +23,20 @@ const initialState: any = {
   status: "idle",
 }
 
-const pointsDeleteSlice = createSlice({
-  name: "pointDelete",
+const pointsEditSlice = createSlice({
+  name: "editPoint",
   initialState,
   extraReducers: (builder) => {
-    builder.addCase( deletePoints.pending, (state) => {
+    builder.addCase( editPoints.pending, (state) => {
       state.status = "loading";
       state.error = null;
     });
-    builder.addCase( deletePoints.fulfilled,
+    builder.addCase( editPoints.fulfilled,
       (state, { payload }) => {
         state.status = "excluido";
       });
 
-    builder.addCase( deletePoints.rejected,
+    builder.addCase( editPoints.rejected,
       (state, { payload }) => {
         if (payload)
           state.error = payload;
@@ -48,5 +48,5 @@ const pointsDeleteSlice = createSlice({
 });
 
 
-export default pointsDeleteSlice.reducer;
+export default pointsEditSlice.reducer;
 

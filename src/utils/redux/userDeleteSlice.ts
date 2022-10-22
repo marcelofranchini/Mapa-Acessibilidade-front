@@ -1,15 +1,17 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import storage from "redux-persist/es/storage";
 import api from "../api";
 
-export const deletePoints = createAsyncThunk(
-  `pointDelete`,
+export const userDelete = createAsyncThunk(
+  `userDelete`,
   async (value: any, {rejectWithValue}) => {
     try {
 
-      const response = await api.delete(`/points/${value.pointId}`, { 
+      const response = await api.delete(`/users/${value.userId}`, { 
         headers: { 'x-access-token': value.token } 
         });
 
+      console.log('delete', response)
       return response.data;
     } catch (err: any) {
       const resp = err?.response;
@@ -23,20 +25,22 @@ const initialState: any = {
   status: "idle",
 }
 
-const pointsDeleteSlice = createSlice({
-  name: "pointDelete",
+const userDeleteSlice = createSlice({
+  name: "userDelete",
   initialState,
   extraReducers: (builder) => {
-    builder.addCase( deletePoints.pending, (state) => {
+    builder.addCase( userDelete.pending, (state) => {
       state.status = "loading";
       state.error = null;
     });
-    builder.addCase( deletePoints.fulfilled,
+    builder.addCase( userDelete.fulfilled,
       (state, { payload }) => {
         state.status = "excluido";
+        storage.removeItem('persist:root')
+
       });
 
-    builder.addCase( deletePoints.rejected,
+    builder.addCase( userDelete.rejected,
       (state, { payload }) => {
         if (payload)
           state.error = payload;
@@ -48,5 +52,5 @@ const pointsDeleteSlice = createSlice({
 });
 
 
-export default pointsDeleteSlice.reducer;
+export default userDeleteSlice.reducer;
 

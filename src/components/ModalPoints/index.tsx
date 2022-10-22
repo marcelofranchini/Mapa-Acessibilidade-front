@@ -7,6 +7,9 @@ import FolderIcon from '@mui/icons-material/Folder';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { deletePoints } from '../../utils/redux/pointsDeleteSlice';
 import { getPoints } from '../../utils/redux/pointsSlice';
+import ModalEditForm from '../ModalEditPoint';
+import EditLocationOutlinedIcon from '@mui/icons-material/EditLocationOutlined';
+import { useState } from 'react';
 
 interface IModalPoints {
   open: boolean;
@@ -25,8 +28,10 @@ const style = {
 
 const ModalPoints = (props: IModalPoints) => {
     const dispatch = useDispatch<AppDispatch>();
-    const points: any = useSelector((state : any) => state.points.list)
-    const user: any = useSelector((state : any) => state.auth.user)
+    const [openModal, setOpenModal] = useState<boolean>(false);
+    const [pointId, setPointId] = useState();
+    const points: any = useSelector((state : any) => state.points?.list)
+    const user: any = useSelector((state : any) => state.auth?.user)
 
     const pointsUser = points.filter((point: any) => point.idUser === user?._id)
 
@@ -42,6 +47,8 @@ const ModalPoints = (props: IModalPoints) => {
     }, [dispatch])
   return (
     <div>
+      <ModalEditForm open={openModal} pointId={pointId} handleClose={() => setOpenModal(false)} />
+
       <Modal
         open={props.open}
         onClose={props.handleClose}
@@ -59,14 +66,17 @@ const ModalPoints = (props: IModalPoints) => {
             }}
               />
               <CardContent style={{ maxWidth: 400}}>
-                {pointsUser.map((point: any)=>{
+                {pointsUser.map((point: any, key: any)=>{
                     return(
-                     <List dense={true}>
+                     <List dense={true} key={key}>
                      <ListItem
                        secondaryAction={
                          <>
                             <IconButton edge="end" type='submit' aria-label="delete" onClick={()=> handleDelete(point._id)}>
                                 <DeleteIcon />
+                            </IconButton>
+                            <IconButton edge="end" type='submit' aria-label="edit" onClick={()=> {setOpenModal(true); setPointId(point._id)}}>
+                                <EditLocationOutlinedIcon />
                             </IconButton>
                          </>
                        }
@@ -85,7 +95,7 @@ const ModalPoints = (props: IModalPoints) => {
                     )
 
                 })}
-                {pointsUser.length < 1 ? <h1>Nenhum Registro </h1>: null}
+                {pointsUser.length < 1 ? <h1 style={{marginLeft: '20%', marginBottom: '20%'}}>Nenhum Registro </h1>: null}
               </CardContent>
             </CardActionArea>
           </Card>

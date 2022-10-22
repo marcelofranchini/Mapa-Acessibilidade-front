@@ -21,6 +21,8 @@ import icone from '../utils/icons/circle.svg'
 import iconeOff from '../utils/icons/circleoff.svg'
 import iconeUnd from '../utils/icons/circleund.svg'
 import ModalPoints from "../components/ModalPoints";
+import ModalEditUser from "../components/ModalEditUser";
+import { getUser } from "../utils/redux/userByIdSlice";
 
 
 
@@ -32,6 +34,7 @@ const MapPage = () => {
   const [openModalInfo, setOpenModalInfo] = React.useState<boolean>(false);
   const [openModalLogin, setOpenModalLogin] = React.useState<boolean>(false);
   const [openModalFormUser,  setOpenModalFormUser] = React.useState<boolean>(false);
+  const [openModalEditUser,  setOpenModalEditUser] = React.useState<boolean>(false);
   const [openModalPoints,  setopenModalPoints] = React.useState<boolean>(false);
 
   const [infos, setInfos] = React.useState<any>();
@@ -56,6 +59,10 @@ const MapPage = () => {
  
   useEffect(() => {
     dispatch(getPoints());
+    if(auth?.user){
+      const data = {token: auth?.user?.token, userId: auth?.user?._id }
+      dispatch(getUser(data));
+    }
   }, [position, dispatch]);
   
   const onMapLoad = (map: google.maps.Map) => {
@@ -75,11 +82,9 @@ const MapPage = () => {
     return setOpenModalInfo(true)
   }
 
- //onst icone2 = "https://cdn-icons-png.flaticon.com/512/668/668274.png"
-
   return (
     <>
-      <Header handleOpenLogin={() => setOpenModalLogin(true)} handleOpenPoints={()=> setopenModalPoints(true)} />
+      <Header handleOpenEditUser={() => setOpenModalEditUser(true)} handleOpenLogin={() => setOpenModalLogin(true)} handleOpenPoints={()=> setopenModalPoints(true)} />
       <div className="map">
 
         <LoadScript
@@ -93,12 +98,28 @@ const MapPage = () => {
             center={position || center}
             zoom={15}
             onDblClick={handlerPoint}
+            options={{
+              disableDoubleClickZoom: true,
+              clickableIcons: false,
+              styles: [
+                {
+                    featureType: "poi",
+                    elementType: "labels",
+                    stylers: [
+                          { visibility: "off" }
+                    ]
+                }
+            ]
+            
+            }}          
             
           >
             <ModalForm coord={position} open={openModalForm} handleClose={()=> setOpenModalForm(false)}/>
             <ModalInfo open={openModalInfo} infos={infos} handleClose={()=> setOpenModalInfo(false)} />
             <ModalLogin open={openModalLogin} handleCloseAuth={()=> setOpenModalLogin(false)} handleClose={()=> {setOpenModalLogin(false); setOpenModalFormUser(true)}} />
             <ModalFormUser open={openModalFormUser} handleCloseFormUser={()=> {setOpenModalFormUser(false); setOpenModalLogin(true)}} handleClose={()=> setOpenModalFormUser(false)}/>
+            <ModalEditUser open={openModalEditUser} handleCloseFormUser={()=> {setOpenModalEditUser(false)}} handleClose={()=> setOpenModalEditUser(false)}/>
+
             <MarkerF position={position} title={'teste'}  icon={iconeUnd} onClick={markerPointForm} key={'x'} />
             <ModalPoints open={openModalPoints} handleClose={()=> setopenModalPoints(false) } />
            { 

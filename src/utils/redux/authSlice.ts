@@ -39,12 +39,16 @@ const authSlice = createSlice({
       (state, { payload }) => {
         const userToken =  jwt_decode(payload.token);
         if(payload && userToken){
+          console.log('j23232323232ondojnsfojndjnsdkjknsd')
+
           state.user = payload;
           state.status = "auth";
           state.error = null;
           
 
         }else{
+
+          console.log('jondojnsfojndjnsdkjknsd')
           return state
         }
         
